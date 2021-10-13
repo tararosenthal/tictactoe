@@ -90,9 +90,9 @@ public class Board extends JPanel {
     private boolean checkIfWin(String piece) {
         InARowUtils<String> inARowUtils = new InARowUtils<>(cellValuesArray, piece);
 
-        gameOver = inARowUtils.checkStraight(3, 3, 3, true)
-                || inARowUtils.checkStraight(3, 3, 3, false)
-                || inARowUtils.checkDiagonal(3, 3, 3);
+        gameOver = inARowUtils.checkStraight(3, true)
+                || inARowUtils.checkStraight(3, false)
+                || inARowUtils.checkDiagonal(3);
 
         return gameOver;
     }
