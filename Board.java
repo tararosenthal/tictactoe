@@ -87,11 +87,11 @@ public class Board extends JPanel {
                                         BoardStatus.GAME_IN_PROGRESS);
     }
 
-    private boolean checkIfWin(String piece) {
-        InARowUtils<String> inARowUtils = new InARowUtils<>(cellValuesArray, piece);
+    private boolean checkIfWin(String element) {
+        InARowUtils<String> inARowUtils = new InARowUtils<>(cellValuesArray, element);
 
-        gameOver = inARowUtils.checkStraight(3, true)
-                || inARowUtils.checkStraight(3, false)
+        gameOver = inARowUtils.checkHorizontal(3)
+                || inARowUtils.checkVertical(3)
                 || inARowUtils.checkDiagonal(3);
 
         return gameOver;

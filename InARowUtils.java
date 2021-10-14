@@ -4,13 +4,13 @@ import java.util.Objects;
 
 public class InARowUtils<T> {
     private final T[][] array;
-    private final T piece;
+    private final T element;
     private final int numOfRows;
     private final int numOfColumns;
 
-    public InARowUtils(T[][] array, T piece) {
+    public InARowUtils(T[][] array, T element) {
         this.array = array;
-        this.piece = piece;
+        this.element = element;
         this.numOfRows = array.length;
         this.numOfColumns = array[0].length;
 
@@ -21,26 +21,34 @@ public class InARowUtils<T> {
         }
     }
 
-    public boolean checkStraight(int numInARow, boolean horizontal) {
-        for (int i = 0; i < numOfRows; i++) {
-            int pieceCount = 0;
-            for (int j = 0; j < numOfColumns; j++) {
-                int row;
-                int column;
-                if (horizontal) {
-                    row = i;
-                    column = j;
-                } else {
-                    row = j;
-                    column = i;
-                }
-                if (Objects.equals(array[row][column], piece)) {
-                    pieceCount++;
-                    if (pieceCount >= numInARow) {
+    public boolean checkHorizontal(int numInARow) {
+        for (int row = 0; row < numOfRows; row++) {
+            int elementCount = 0;
+            for (int column = 0; column < numOfColumns; column++) {
+                if (Objects.equals(array[row][column], element)) {
+                    elementCount++;
+                    if (elementCount >= numInARow) {
                         return true;
                     }
                 } else {
-                    pieceCount = 0;
+                    elementCount = 0;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean checkVertical(int numInARow) {
+        for (int column = 0; column < numOfColumns; column++) {
+            int elementCount = 0;
+            for (int row = 0; row < numOfRows; row++) {
+                if (Objects.equals(array[row][column], element)) {
+                    elementCount++;
+                    if (elementCount >= numInARow) {
+                        return true;
+                    }
+                } else {
+                    elementCount = 0;
                 }
             }
         }
@@ -48,34 +56,24 @@ public class InARowUtils<T> {
     }
 
     public boolean checkDiagonal(int numInARow) {
-        for (int i = 0; i < numOfRows; i++) {
-            for (int j = 0; j < numOfColumns; j++) {
-                if (checkBackSlash(numInARow, i, j)
-                        || checkForwardSlash(numInARow, i, j)) {
-                    return true;
-                }
+        for (int row = 0; row < numOfRows; row++) {
+            if (checkForwardSlash(numInARow, row, 0)) {
+             return true;
             }
         }
-        return false;
-    }
-
-    private boolean checkBackSlash(int numInARow, int row,
-                                   int column) {
-        int plusLimit = Math.min(numOfRows - 1 - row, numOfColumns - 1 - column);
-        int minusLimit = Math.min(row, column);
-        int maxShift = plusLimit + minusLimit + 1;
-        row -= minusLimit;
-        column -= minusLimit;
-        int pieceCount = 0;
-
-        for (int i = 0; i < maxShift; i++) {
-            if (Objects.equals(array[row + i][column + i], piece)) {
-                pieceCount++;
-                if (pieceCount >= numInARow) {
-                    return true;
-                }
-            } else {
-                pieceCount = 0;
+        for (int column = 0; column < numOfColumns; column++) {
+            if (checkForwardSlash(numInARow, 0, column)) {
+                return true;
+            }
+        }
+        for (int column = 0; column < numOfColumns; column++) {
+            if (checkBackSlash(numInARow, numOfRows - 1, column)) {
+                return true;
+            }
+        }
+        for (int row = 0; row < numOfRows; row++) {
+            if (checkBackSlash(numInARow, row, numOfColumns - 1)) {
+                return true;
             }
         }
         return false;
@@ -91,7 +89,7 @@ public class InARowUtils<T> {
         int pieceCount = 0;
 
         for (int i = 0; i < maxShift; i++) {
-            if (Objects.equals(array[row - i][column + i], piece)) {
+            if (Objects.equals(array[row - i][column + i], element)) {
                 pieceCount++;
                 if (pieceCount >= numInARow) {
                     return true;
@@ -102,4 +100,27 @@ public class InARowUtils<T> {
         }
         return false;
     }
+
+    private boolean checkBackSlash(int numInARow, int row,
+                                   int column) {
+        int plusLimit = Math.min(numOfRows - 1 - row, numOfColumns - 1 - column);
+        int minusLimit = Math.min(row, column);
+        int maxShift = plusLimit + minusLimit + 1;
+        row -= minusLimit;
+        column -= minusLimit;
+        int pieceCount = 0;
+
+        for (int i = 0; i < maxShift; i++) {
+            if (Objects.equals(array[row + i][column + i], element)) {
+                pieceCount++;
+                if (pieceCount >= numInARow) {
+                    return true;
+                }
+            } else {
+                pieceCount = 0;
+            }
+        }
+        return false;
+    }
+
 }
